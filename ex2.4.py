@@ -1,0 +1,48 @@
+import json
+import time
+import matplotlib.pyplot as plt
+
+import sys
+sys.setrecursionlimit(20000)
+def func1(arr, low, high):
+    if low < high:
+        pivot_index = (low + high) // 2
+        array[low], array[pivot_index] = array[pivot_index], array[low]
+        pi = func2(arr, low, high)
+        func1(arr, low, pi-1)
+        func1(arr, pi + 1, high)
+def func2(array, start, end):
+    p = array[start]
+    low = start + 1
+    high = end
+    while True:
+        while low <= high and array[high] >= p:
+            high = high - 1
+        while low <= high and array[low] <= p:
+            low = low + 1
+        if low <= high:
+            array[low], array[high] = array[high], array[low]
+        else:
+            break
+    array[start], array[high] = array[high], array[start]
+    return high
+
+with open("ex2.json") as f:
+    data = json.load(f)
+
+arrays = data
+
+lengths = [len(array) for array in arrays]
+times = []
+
+for array in arrays:
+    start = time.time()
+    func1(array, 0, len(array) - 1)
+    end = time.time()
+    times.append(end - start)
+
+plt.plot(lengths, times)
+plt.xlabel("Array Length")
+plt.ylabel("Time (seconds)")
+plt.title("QuickSort Timing Results")
+plt.show()
